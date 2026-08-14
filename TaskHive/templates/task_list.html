@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Tasks
+{% endblock %}
+
+{% block content %}
+
+<h1>All Tasks</h1>
+
+{% for task in tasks %}
+
+<div class="task-card">
+
+    <h3>{{ task.title }}</h3>
+
+    <p>{{ task.description|truncatewords:15 }}</p>
+
+    <p>Budget: ${{ task.budget }}</p>
+
+    <p>Status: {{ task.status }}</p>
+
+    <p>Category: {{ task.category.name }}</p>
+
+    <a href="{% url 'task_detail' task.id %}">
+        View Details
+    </a>
+
+</div>
+
+<hr>
+
+{% empty %}
+
+<p>No Tasks Found.</p>
+
+{% endfor %}
+
+{% endblock %}

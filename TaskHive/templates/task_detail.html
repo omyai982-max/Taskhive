@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Task Details
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ task.title }}</h1>
+
+<p>{{ task.description }}</p>
+
+<p><strong>Budget:</strong> ${{ task.budget }}</p>
+
+<p><strong>Deadline:</strong> {{ task.deadline }}</p>
+
+<p><strong>Status:</strong> {{ task.status }}</p>
+
+<p><strong>Category:</strong> {{ task.category.name }}</p>
+
+<p><strong>Owner:</strong> {{ task.owner.username }}</p>
+
+<a href="{% url 'home' %}">
+    Back Home
+</a>
+<h2>Place a Bid</h2>
+
+<p>
+    You are about to bid on this project.
+    Ensure you can deliver before the deadline.
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Bid</button>
+</form>
+
+<hr>
+
+<h2>All Bids</h2>
+
+{% for bid in bids %}
+<div class="bid-card">
+    <h4>{{ bid.freelancer.username }}</h4>
+
+    <p><strong>Amount:</strong> ${{ bid.amount }}</p>
+
+    <p>{{ bid.message }}</p>
+
+    <small>{{ bid.created_at }}</small>
+
+    <br><br>
+
+    {% if request.user == task.owner and task.status == "Open" %}
+        <a href="{% url 'choose_winner' bid.id %}">
+            <button>Choose Winner</button>
+        </a>
+    {% endif %}
+</div>
+
+<hr>
+{% empty %}
+<p>No bids yet.</p>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}
+TaskHive - Find Freelance Tasks
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h2>Find the Perfect Task or Freelancer</h2>
+
+        <p>
+            TaskHive connects talented freelancers with clients
+            around the world.
+        </p>
+
+        <!-- SEARCH -->
+        <form method="GET" class="search-box">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search tasks..."
+                value="{{ request.GET.search }}"
+            >
+
+            <select name="category">
+
+                <option value="">
+                    All Categories
+                </option>
+
+                {% for category in categories %}
+
+                <option
+                    value="{{ category.id }}"
+                    {% if request.GET.category == category.id|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >
+                    {{ category.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+        <!-- BUTTONS -->
+        <div class="hero-buttons">
+
+            <a href="{% url 'task_list' %}">
+                Explore Tasks
+            </a>
+
+            {% if user.is_authenticated %}
+
+            <a href="{% url 'create_task' %}">
+                Post a Task
+            </a>
+
+            {% else %}
+
+            <a href="{% url 'register' %}">
+                Become a Freelancer
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CATEGORIES -->
+<section class="category-section">
+
+    <h2>Featured Categories</h2>
+
+    <p>
+        Explore the most popular categories and find
+        the perfect task or freelancer.
+    </p>
+
+    <div class="category-container">
+
+        {% for category in categories %}
+
+        <a
+            href="?category={{ category.id }}"
+            class="category-card"
+        >
+
+            <div class="category-icon">
+                {{ category.icon }}
+            </div>
+
+            <h3>
+                {{ category.name }}
+            </h3>
+
+            <p>
+                {{ category.description }}
+            </p>
+
+        </a>
+
+        {% empty %}
+
+        <p>
+            No categories available.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- TASKS -->
+<section class="task-section">
+
+    <h2>Latest Tasks</h2>
+
+    <div class="task-container">
+
+        {% for task in tasks %}
+
+        <div class="task-card">
+
+            <h3>
+                {{ task.title }}
+            </h3>
+
+            <p>
+                {{ task.description|truncatewords:15 }}
+            </p>
+
+            <p>
+                <strong>Budget:</strong>
+                ${{ task.budget }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                {{ task.status }}
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                {{ task.category.name }}
+            </p>
+
+            <a href="{% url 'task_detail' task.id %}">
+                View Details
+            </a>
+
+        </div>
+
+        {% empty %}
+
+        <p>
+            No tasks available.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+  
+
+{% endblock %}
+
